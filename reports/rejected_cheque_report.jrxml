@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jasperReport
+    xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://jasperreports.sourceforge.net/jasperreports
+        http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="rejected_cheque_report"
+    pageWidth="595"
+    pageHeight="842"
+    columnWidth="555"
+    leftMargin="20"
+    rightMargin="20"
+    topMargin="20"
+    bottomMargin="20">
+
+    <parameter name="P_STATUS" class="java.lang.String"/>
+
+    <queryString>
+        <![CDATA[
+            SELECT cheque_number,
+                   customer_name,
+                   account_number,
+                   cheque_amount,
+                   rejection_reason
+            FROM cheque_transaction
+            WHERE status = $P{P_STATUS}
+        ]]>
+    </queryString>
+
+    <field name="cheque_number" class="java.lang.String"/>
+    <field name="customer_name" class="java.lang.String"/>
+    <field name="account_number" class="java.lang.String"/>
+    <field name="cheque_amount" class="java.math.BigDecimal"/>
+    <field name="rejection_reason" class="java.lang.String"/>
+
+    <title>
+        <band height="60">
+            <staticText>
+                <reportElement x="150" y="15" width="300" height="30"/>
+                <textElement textAlignment="Center">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[REJECTED CHEQUE REPORT]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="35">
+
+            <staticText>
+                <reportElement x="0" y="0" width="95" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cheque No]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="95" y="0" width="110" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Customer]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="205" y="0" width="110" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Account]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="315" y="0" width="100" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="415" y="0" width="140" height="35"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Rejection Reason]]></text>
+            </staticText>
+
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="30">
+
+            <textField>
+                <reportElement x="0" y="0" width="95" height="30"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{cheque_number}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="95" y="0" width="110" height="30"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{customer_name}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="205" y="0" width="110" height="30"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{account_number}]]></textFieldExpression>
+            </textField>
+
+            <textField pattern="#,##0.00">
+                <reportElement x="315" y="0" width="100" height="30"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{cheque_amount}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="415" y="0" width="140" height="30"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{rejection_reason}]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </detail>
+
+    <pageFooter>
+        <band height="30">
+            <textField>
+                <reportElement x="400" y="0" width="155" height="30"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+</jasperReport>
