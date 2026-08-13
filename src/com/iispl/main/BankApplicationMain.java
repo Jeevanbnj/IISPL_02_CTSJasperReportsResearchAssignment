@@ -1,5 +1,6 @@
 package com.iispl.main;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,7 +107,15 @@ public class BankApplicationMain {
 
                     break;
 
+    
+
                 case 4:
+
+                    System.out.print("Enter minimum amount: ");
+
+                    BigDecimal minAmount = scanner.nextBigDecimal();
+
+                    parameters.put("P_MIN_AMOUNT", minAmount);
 
                     runner.generatePdfReport(
                             "reports/high_value_report.jrxml",
@@ -120,6 +129,7 @@ public class BankApplicationMain {
                     );
 
                     break;
+
 
                 case 5:
 
