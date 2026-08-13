@@ -85,7 +85,12 @@ public class BankApplicationMain {
                     break;
 
                 case 3:
-
+                	System.out.print("Enter MICR status: ");
+                	
+                	String micr_status = scanner.nextLine();
+                	
+                	parameters.put("P_MICR_STATUS", micr_status);
+                	
                     runner.generatePdfReport(
                             "reports/micr_repair_report.jrxml",
                             "output/micr_repair_report.pdf",
