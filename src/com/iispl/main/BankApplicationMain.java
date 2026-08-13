@@ -2,6 +2,7 @@ package com.iispl.main;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -48,7 +49,8 @@ public class BankApplicationMain {
             switch (choice) {
 
                 case 1:
-
+                	
+                	parameters.put("P_PROCESSING_DATE", LocalDate.of(2026, 8, 13));
                     runner.generatePdfReport(
                             "reports/daily_cheque_report.jrxml",
                             "output/daily_cheque_report.pdf",
