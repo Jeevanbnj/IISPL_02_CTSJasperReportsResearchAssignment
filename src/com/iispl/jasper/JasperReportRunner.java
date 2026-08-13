@@ -1,0 +1,42 @@
+package com.iispl.jasper;
+
+import java.sql.Connection;
+import java.util.Map;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+
+public class JasperReportRunner {
+
+	public JasperReport compileReport(String jrxmlPath) throws JRException {
+
+		return JasperCompileManager.compileReport(jrxmlPath);
+
+	}
+
+	public JasperReport fillReport(JasperReport report, Map<String, Object> parameters, Connection connection)
+			throws JRException {
+		return report;
+
+	}
+
+	public void exportToPdf(JasperPrint jasperPrint, String outputPath) throws JRException {
+
+		JasperExportManager.exportReportToPdfFile(jasperPrint, outputPath);
+	}
+
+	public void generatePdfReport(String jrxmlPath, String outputPath, Map<String, Object> parameters,
+			Connection connection) throws JRException {
+
+		JasperReport report = compileReport(jrxmlPath);
+
+		JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, connection);
+
+		exportToPdf(jasperPrint, outputPath);
+	}
+
+}
