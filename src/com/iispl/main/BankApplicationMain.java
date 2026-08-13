@@ -87,6 +87,8 @@ public class BankApplicationMain {
                 case 3:
                 	System.out.print("Enter MICR status: ");
                 	
+                	scanner.nextLine();
+                	
                 	String micr_status = scanner.nextLine();
                 	
                 	parameters.put("P_MICR_STATUS", micr_status);
