@@ -19,9 +19,10 @@ public class JasperReportRunner {
 
 	}
 
-	public JasperReport fillReport(JasperReport report, Map<String, Object> parameters, Connection connection)
+	public JasperPrint fillReport(JasperReport report, Map<String, Object> parameters, Connection connection)
 			throws JRException {
-		return report;
+		JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, connection);
+		return jasperPrint;
 
 	}
 
@@ -40,7 +41,7 @@ public class JasperReportRunner {
 
 		JasperReport report = compileReport(jrxmlPath);
 
-		JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, connection);
+		JasperPrint jasperPrint = fillReport(report, parameters, connection);
 
 		exportToPdf(jasperPrint, outputPath);
 	}

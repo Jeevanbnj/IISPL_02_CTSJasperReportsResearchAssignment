@@ -2,6 +2,7 @@ package com.iispl.main;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class BankApplicationMain {
 
                 case 1:
                 	
-                	parameters.put("P_PROCESSING_DATE", LocalDate.of(2026, 8, 13));
+                	parameters.put("P_PROCESSING_DATE", Date.valueOf("2026-08-13"));
                     runner.generatePdfReport(
                             "reports/daily_cheque_report.jrxml",
                             "output/daily_cheque_report.pdf",
