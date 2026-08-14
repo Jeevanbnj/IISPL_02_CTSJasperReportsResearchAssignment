@@ -164,7 +164,14 @@ public class BankApplicationMain {
                     break;
 
                 case 7:
+                	System.out.print("Enter processing date (yyyy-MM-dd): ");
 
+                    String date = scanner.nextLine();
+
+                    LocalDate processingDate = LocalDate.parse(date);
+                	
+                	parameters.put("P_PROCESSING_DATE", date);
+                	
                     runner.generatePdfReport(
                             "reports/cts_daily_operations_dashboard.jrxml",
                             "output/CTS_Daily_Operations_Dashboard.pdf",
