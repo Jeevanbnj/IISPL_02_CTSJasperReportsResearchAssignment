@@ -17,8 +17,6 @@
     <!--
         CTS Daily Operations Dashboard
         Source: CTS_JasperReports_Database.sql
-        Main dashboard query supplies the six KPI values.
-        P_PROCESSING_DATE makes the supplied daily query reusable.
     -->
 
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
