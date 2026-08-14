@@ -33,11 +33,11 @@ public class JasperReportRunner {
 
 	public void generatePdfReport(String jrxmlPath, String outputPath, Map<String, Object> parameters,
 			Connection connection) throws JRException {
-		
-		File file = new File("reports/daily_cheque_report.jrxml");
-
-		System.out.println("Absolute path: " + file.getAbsolutePath());
-		System.out.println("File exists: " + file.exists());
+//		
+//		File file = new File("reports/daily_cheque_report.jrxml");
+//
+//		System.out.println("Absolute path: " + file.getAbsolutePath());
+//		System.out.println("File exists: " + file.exists());
 
 		JasperReport report = compileReport(jrxmlPath);
 
