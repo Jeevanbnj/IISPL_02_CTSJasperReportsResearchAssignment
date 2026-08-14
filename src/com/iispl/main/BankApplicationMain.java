@@ -171,6 +171,7 @@ public class BankApplicationMain {
 
                         String date = scanner.nextLine();
 
+
                         LocalDate processingDate = LocalDate.parse(date);
                     	
                     	parameters.put("P_PROCESSING_DATE", processingDate);
@@ -182,6 +183,7 @@ public class BankApplicationMain {
                                 connection
                         );
 
+             
                         System.out.println(
                                 "CTS Daily Operations Dashboard generated successfully."
                         );
