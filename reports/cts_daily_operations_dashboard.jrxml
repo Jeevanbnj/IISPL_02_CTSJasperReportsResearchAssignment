@@ -1,66 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
-                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="cts_daily_operations_dashboard"
-              pageWidth="842"
-              pageHeight="595"
-              orientation="Landscape"
-              columnWidth="792"
-              leftMargin="25"
-              rightMargin="25"
-              topMargin="20"
-              bottomMargin="20"
-              uuid="c1f8c4b4-5d6f-4c7b-9d7e-cts-dashboard">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="cts_daily_operations_dashboard"
+    pageWidth="842"
+    pageHeight="595"
+    orientation="Landscape"
+    columnWidth="792"
+    leftMargin="25"
+    rightMargin="25"
+    topMargin="20"
+    bottomMargin="20">
 
-    <!--
-        CTS Daily Operations Dashboard
-        Source: CTS_JasperReports_Database.sql
-    -->
-
-    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-
-    <parameter name="P_PROCESSING_DATE" class="java.sql.Date">
-        <defaultValueExpression><![CDATA[java.sql.Date.valueOf("2026-08-13")]]></defaultValueExpression>
-    </parameter>
+    <parameter name="P_PROCESSING_DAILY_DATE" class="java.sql.Date"/>
 
     <queryString language="SQL"><![CDATA[
         SELECT
+            (SELECT COUNT(*)
+             FROM cheque_transaction
+             WHERE processing_date = $P{P_PROCESSING_DAILY_DATE})
+             AS total_cheques,
 
-    (SELECT COUNT(*)
-     FROM cheque_transaction
-     WHERE processing_date = $P{P_PROCESSING_DATE})
-     AS total_cheques,
+            (SELECT COUNT(*)
+             FROM cheque_transaction
+             WHERE processing_date = $P{P_PROCESSING_DAILY_DATE}
+             AND status = 'APPROVED')
+             AS approved_cheques,
 
-    (SELECT COUNT(*)
-     FROM cheque_transaction
-     WHERE processing_date = $P{P_PROCESSING_DATE}
-       AND status = 'APPROVED')
-     AS approved_cheques,
+            (SELECT COUNT(*)
+             FROM cheque_transaction
+             WHERE processing_date = $P{P_PROCESSING_DAILY_DATE}
+             AND status = 'REJECTED')
+             AS rejected_cheques,
 
-    (SELECT COUNT(*)
-     FROM cheque_transaction
-     WHERE processing_date = $P{P_PROCESSING_DATE}
-       AND status = 'REJECTED')
-     AS rejected_cheques,
+            (SELECT COUNT(*)
+             FROM cheque_transaction
+             WHERE processing_date = $P{P_PROCESSING_DAILY_DATE}
+             AND micr_status = 'INVALID')
+             AS micr_repair_pending,
 
-    (SELECT COUNT(*)
-     FROM cheque_transaction
-     WHERE processing_date = $P{P_PROCESSING_DATE}
-       AND micr_status = 'INVALID')
-     AS micr_repair_pending,
+            (SELECT COUNT(*)
+             FROM cheque_transaction
+             WHERE processing_date = $P{P_PROCESSING_DAILY_DATE}
+             AND cheque_amount >= 200000)
+             AS high_value_cheques,
 
-    (SELECT COUNT(*)
-     FROM cheque_transaction
-     WHERE processing_date = $P{P_PROCESSING_DATE}
-       AND cheque_amount >= 200000)
-     AS high_value_cheques,
-
-    (SELECT SUM(cheque_amount)
-     FROM cheque_transaction
-     WHERE processing_date = $P{P_PROCESSING_DATE})
-     AS total_processing_amount;
+            (SELECT SUM(cheque_amount)
+             FROM cheque_transaction
+             WHERE processing_date = $P{P_PROCESSING_DAILY_DATE})
+             AS total_processing_amount
     ]]></queryString>
 
     <field name="total_cheques" class="java.lang.Long"/>
@@ -70,236 +58,453 @@
     <field name="high_value_cheques" class="java.lang.Long"/>
     <field name="total_processing_amount" class="java.math.BigDecimal"/>
 
-    <!-- Dataset used only for the visual status summary chart. -->
-    <subDataset name="StatusSummaryDataset" uuid="5f9d3b55-8b6e-4a7f-9f11-status-chart">
-        <parameter name="P_CHART_DATE" class="java.sql.Date"/>
+    <subDataset name="StatusSummaryDataset">
+
         <queryString language="SQL"><![CDATA[
             SELECT
                 status,
                 COUNT(*) AS status_count
             FROM cheque_transaction
-            WHERE processing_date = $P{P_CHART_DATE}
+            WHERE processing_date = $P{P_PROCESSING_DAILY_DATE}
             GROUP BY status
             ORDER BY status
         ]]></queryString>
+
         <field name="status" class="java.lang.String"/>
         <field name="status_count" class="java.lang.Long"/>
+
     </subDataset>
 
     <title>
         <band height="70">
+
             <staticText>
-                <reportElement x="0" y="0" width="792" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="0"
+                    y="0"
+                    width="792"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="22" isBold="true"/>
                 </textElement>
-                <text><![CDATA[CTS - Daily Operations Dashboard]]></text>
+                <text><![CDATA[
+                    CTS - Daily Operations Dashboard
+                ]]></text>
             </staticText>
 
             <staticText>
-                <reportElement x="0" y="36" width="125" height="22"/>
+                <reportElement
+                    x="0"
+                    y="36"
+                    width="125"
+                    height="22"/>
                 <textElement verticalAlignment="Middle">
                     <font size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Processing Date:]]></text>
+                <text><![CDATA[
+                    Processing Date:
+                ]]></text>
             </staticText>
 
             <textField pattern="dd-MM-yyyy">
-                <reportElement x="125" y="36" width="120" height="22"/>
+                <reportElement
+                    x="125"
+                    y="36"
+                    width="120"
+                    height="22"/>
                 <textElement verticalAlignment="Middle">
                     <font size="11"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{P_PROCESSING_DATE}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $P{P_PROCESSING_DAILY_DATE}
+                ]]></textFieldExpression>
             </textField>
 
             <line>
-                <reportElement x="0" y="66" width="792" height="1"/>
+                <reportElement
+                    x="0"
+                    y="66"
+                    width="792"
+                    height="1"/>
             </line>
+
         </band>
     </title>
 
     <detail>
         <band height="390">
 
-            <!-- KPI 1 -->
             <rectangle radius="8">
-                <reportElement x="0" y="10" width="250" height="78"/>
+                <reportElement
+                    x="0"
+                    y="10"
+                    width="250"
+                    height="78"/>
             </rectangle>
+
             <staticText>
-                <reportElement x="15" y="20" width="220" height="22"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="15"
+                    y="20"
+                    width="220"
+                    height="22"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Total Cheques]]></text>
+                <text><![CDATA[
+                    Total Cheques
+                ]]></text>
             </staticText>
+
             <textField>
-                <reportElement x="15" y="45" width="220" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="15"
+                    y="45"
+                    width="220"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="20" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{total_cheques}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $F{total_cheques}
+                ]]></textFieldExpression>
             </textField>
 
-            <!-- KPI 2 -->
             <rectangle radius="8">
-                <reportElement x="271" y="10" width="250" height="78"/>
+                <reportElement
+                    x="271"
+                    y="10"
+                    width="250"
+                    height="78"/>
             </rectangle>
+
             <staticText>
-                <reportElement x="286" y="20" width="220" height="22"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="286"
+                    y="20"
+                    width="220"
+                    height="22"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Approved Cheques]]></text>
+                <text><![CDATA[
+                    Approved Cheques
+                ]]></text>
             </staticText>
+
             <textField>
-                <reportElement x="286" y="45" width="220" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="286"
+                    y="45"
+                    width="220"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="20" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{approved_cheques}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $F{approved_cheques}
+                ]]></textFieldExpression>
             </textField>
 
-            <!-- KPI 3 -->
             <rectangle radius="8">
-                <reportElement x="542" y="10" width="250" height="78"/>
+                <reportElement
+                    x="542"
+                    y="10"
+                    width="250"
+                    height="78"/>
             </rectangle>
+
             <staticText>
-                <reportElement x="557" y="20" width="220" height="22"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="557"
+                    y="20"
+                    width="220"
+                    height="22"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Rejected Cheques]]></text>
+                <text><![CDATA[
+                    Rejected Cheques
+                ]]></text>
             </staticText>
+
             <textField>
-                <reportElement x="557" y="45" width="220" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="557"
+                    y="45"
+                    width="220"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="20" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{rejected_cheques}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $F{rejected_cheques}
+                ]]></textFieldExpression>
             </textField>
 
-            <!-- KPI 4 -->
             <rectangle radius="8">
-                <reportElement x="0" y="100" width="250" height="78"/>
+                <reportElement
+                    x="0"
+                    y="100"
+                    width="250"
+                    height="78"/>
             </rectangle>
+
             <staticText>
-                <reportElement x="15" y="110" width="220" height="22"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="15"
+                    y="110"
+                    width="220"
+                    height="22"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[MICR Repair Pending]]></text>
+                <text><![CDATA[
+                    MICR Repair Pending
+                ]]></text>
             </staticText>
+
             <textField>
-                <reportElement x="15" y="135" width="220" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="15"
+                    y="135"
+                    width="220"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="20" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{micr_repair_pending}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $F{micr_repair_pending}
+                ]]></textFieldExpression>
             </textField>
 
-            <!-- KPI 5 -->
             <rectangle radius="8">
-                <reportElement x="271" y="100" width="250" height="78"/>
+                <reportElement
+                    x="271"
+                    y="100"
+                    width="250"
+                    height="78"/>
             </rectangle>
+
             <staticText>
-                <reportElement x="286" y="110" width="220" height="22"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="286"
+                    y="110"
+                    width="220"
+                    height="22"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[High Value Cheques]]></text>
+                <text><![CDATA[
+                    High Value Cheques
+                ]]></text>
             </staticText>
+
             <textField>
-                <reportElement x="286" y="135" width="220" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="286"
+                    y="135"
+                    width="220"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="20" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{high_value_cheques}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $F{high_value_cheques}
+                ]]></textFieldExpression>
             </textField>
 
-            <!-- KPI 6 -->
             <rectangle radius="8">
-                <reportElement x="542" y="100" width="250" height="78"/>
+                <reportElement
+                    x="542"
+                    y="100"
+                    width="250"
+                    height="78"/>
             </rectangle>
+
             <staticText>
-                <reportElement x="557" y="110" width="220" height="22"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="557"
+                    y="110"
+                    width="220"
+                    height="22"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Total Processing Amount]]></text>
+                <text><![CDATA[
+                    Total Processing Amount
+                ]]></text>
             </staticText>
+
             <textField pattern="#,##0.00">
-                <reportElement x="557" y="135" width="220" height="32"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement
+                    x="557"
+                    y="135"
+                    width="220"
+                    height="32"/>
+                <textElement
+                    textAlignment="Center"
+                    verticalAlignment="Middle">
                     <font size="17" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{total_processing_amount}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[
+                    $F{total_processing_amount}
+                ]]></textFieldExpression>
             </textField>
 
-            <!-- Visual summary -->
             <staticText>
-                <reportElement x="0" y="195" width="792" height="25"/>
+                <reportElement
+                    x="0"
+                    y="195"
+                    width="792"
+                    height="25"/>
                 <textElement verticalAlignment="Middle">
                     <font size="13" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Cheque Status Summary]]></text>
+                <text><![CDATA[
+                    Cheque Status Summary
+                ]]></text>
             </staticText>
 
             <barChart>
+
                 <chart>
-                    <reportElement x="0" y="225" width="792" height="155"/>
+                    <reportElement
+                        x="0"
+                        y="225"
+                        width="792"
+                        height="155"/>
+
                     <box>
                         <pen lineWidth="0.5"/>
                     </box>
+
                     <chartTitle/>
                     <chartSubtitle/>
                     <chartLegend position="Bottom"/>
                 </chart>
+
                 <categoryDataset>
+
                     <dataset>
+
                         <datasetRun subDataset="StatusSummaryDataset">
-                            <datasetParameter name="P_CHART_DATE">
-                                <datasetParameterExpression><![CDATA[$P{P_PROCESSING_DATE}]]></datasetParameterExpression>
-                            </datasetParameter>
-                            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+
+                            <connectionExpression><![CDATA[
+                                $P{REPORT_CONNECTION}
+                            ]]></connectionExpression>
+
                         </datasetRun>
+
                     </dataset>
+
                     <categorySeries>
-                        <seriesExpression><![CDATA["Cheque Count"]]></seriesExpression>
-                        <categoryExpression><![CDATA[$F{status}]]></categoryExpression>
-                        <valueExpression><![CDATA[$F{status_count}]]></valueExpression>
+
+                        <seriesExpression><![CDATA[
+                            "Cheque Count"
+                        ]]></seriesExpression>
+
+                        <categoryExpression><![CDATA[
+                            $F{status}
+                        ]]></categoryExpression>
+
+                        <valueExpression><![CDATA[
+                            $F{status_count}
+                        ]]></valueExpression>
+
                     </categorySeries>
+
                 </categoryDataset>
+
                 <barPlot>
+
                     <plot/>
+
                     <categoryAxisFormat>
                         <axisFormat labelRotation="0"/>
                     </categoryAxisFormat>
+
                     <valueAxisFormat>
                         <axisFormat tickLabelMask="#,##0"/>
                     </valueAxisFormat>
+
                 </barPlot>
+
             </barChart>
 
         </band>
     </detail>
 
     <pageFooter>
+
         <band height="25">
+
             <textField>
-                <reportElement x="0" y="3" width="500" height="18"/>
+
+                <reportElement
+                    x="0"
+                    y="3"
+                    width="500"
+                    height="18"/>
+
                 <textElement verticalAlignment="Middle">
                     <font size="8"/>
                 </textElement>
-                <textFieldExpression><![CDATA["CTS Reporting | Daily Operations Dashboard"]]></textFieldExpression>
+
+                <textFieldExpression><![CDATA[
+                    "CTS Reporting | Daily Operations Dashboard"
+                ]]></textFieldExpression>
+
             </textField>
+
             <textField>
-                <reportElement x="650" y="3" width="142" height="18"/>
-                <textElement textAlignment="Right" verticalAlignment="Middle">
+
+                <reportElement
+                    x="650"
+                    y="3"
+                    width="142"
+                    height="18"/>
+
+                <textElement
+                    textAlignment="Right"
+                    verticalAlignment="Middle">
+
                     <font size="8"/>
+
                 </textElement>
-                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+
+                <textFieldExpression><![CDATA[
+                    "Page " + $V{PAGE_NUMBER}
+                ]]></textFieldExpression>
+
             </textField>
+
         </band>
+
     </pageFooter>
 
 </jasperReport>

@@ -171,7 +171,7 @@ public class BankApplicationMain {
 
                     LocalDate processingDate = LocalDate.parse(date);
                 	
-                	parameters.put("P_PROCESSING_DATE", date);
+                	parameters.put("P_PROCESSING__DAILY_DATE", date);
                 	
                     runner.generatePdfReport(
                             "reports/cts_daily_operations_dashboard.jrxml",
