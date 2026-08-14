@@ -18,7 +18,7 @@ public class BankApplicationMain {
         Scanner scanner = new Scanner(System.in);
 
         Connection connection = null;
-
+ 
         try {
 
             // 1. Get database connection
