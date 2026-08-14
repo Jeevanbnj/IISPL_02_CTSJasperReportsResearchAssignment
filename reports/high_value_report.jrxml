@@ -8,89 +8,41 @@
     pageWidth="842"
     pageHeight="595"
     orientation="Landscape"
-    columnWidth="782"
-    leftMargin="30"
-    rightMargin="30"
+    columnWidth="742"
+    leftMargin="50"
+    rightMargin="50"
     topMargin="30"
     bottomMargin="30">
 
-    <!-- ========================================================= -->
-    <!-- 1. STYLES                                                 -->
-    <!-- ========================================================= -->
+    <!-- ==================== STYLES ==================== -->
 
-    <!-- Main table header style -->
     <style
         name="HeaderStyle"
         forecolor="#FFFFFF"
         backcolor="#1F4E78"
-        mode="Opaque">
+        mode="Opaque"
+        fontName="SansSerif"
+        fontSize="10"
+        isBold="true"/>
 
-        <font
-            fontName="SansSerif"
-            size="10"
-            isBold="true"/>
+    <style
+        name="GroupStyle"
+        backcolor="#D9EAF7"
+        mode="Opaque"
+        fontName="SansSerif"
+        fontSize="11"
+        isBold="true"/>
 
-    </style>
-
-
-    <!-- Status style -->
-    <style name="StatusStyle">
-
-        <!-- REJECTED -->
-        <conditionalStyle>
-
-            <conditionExpression><![CDATA[
-                "REJECTED".equalsIgnoreCase(
-                    $F{status} == null ? "" : $F{status}
-                )
-            ]]></conditionExpression>
-
-            <style
-                forecolor="#9C0006"
-                backcolor="#FFC7CE"
-                mode="Opaque"
-                isBold="true"/>
-
-        </conditionalStyle>
-
-
-        <!-- APPROVED -->
-        <conditionalStyle>
-
-            <conditionExpression><![CDATA[
-                "APPROVED".equalsIgnoreCase(
-                    $F{status} == null ? "" : $F{status}
-                )
-            ]]></conditionExpression>
-
-            <style
-                forecolor="#006100"
-                backcolor="#E2F0D9"
-                mode="Opaque"
-                isBold="true"/>
-
-        </conditionalStyle>
-
-    </style>
-
-
-    <!-- Normal total style -->
     <style
         name="TotalStyle"
-        backcolor="#D9EAF7"
-        mode="Opaque">
-
-        <font
-            fontName="SansSerif"
-            size="10"
-            isBold="true"/>
-
-    </style>
+        backcolor="#EAF2F8"
+        mode="Opaque"
+        fontName="SansSerif"
+        fontSize="9"
+        isBold="true"/>
 
 
-    <!-- ========================================================= -->
-    <!-- 2. PARAMETERS                                              -->
-    <!-- ========================================================= -->
+    <!-- ==================== PARAMETER ==================== -->
 
     <parameter
         name="P_MIN_AMOUNT"
@@ -103,9 +55,7 @@
     </parameter>
 
 
-    <!-- ========================================================= -->
-    <!-- 3. SQL QUERY                                               -->
-    <!-- ========================================================= -->
+    <!-- ==================== QUERY ==================== -->
 
     <queryString language="SQL"><![CDATA[
         SELECT
@@ -120,9 +70,7 @@
     ]]></queryString>
 
 
-    <!-- ========================================================= -->
-    <!-- 4. FIELDS                                                  -->
-    <!-- ========================================================= -->
+    <!-- ==================== FIELDS ==================== -->
 
     <field
         name="cheque_number"
@@ -145,11 +93,8 @@
         class="java.lang.String"/>
 
 
-    <!-- ========================================================= -->
-    <!-- 5. VARIABLES                                               -->
-    <!-- ========================================================= -->
+    <!-- ==================== VARIABLES ==================== -->
 
-    <!-- Overall cheque count -->
     <variable
         name="TotalHighValueCheques"
         class="java.lang.Integer"
@@ -166,7 +111,6 @@
     </variable>
 
 
-    <!-- Overall amount -->
     <variable
         name="TotalHighValueAmount"
         class="java.math.BigDecimal"
@@ -183,7 +127,6 @@
     </variable>
 
 
-    <!-- Bank cheque count -->
     <variable
         name="BankChequeCount"
         class="java.lang.Integer"
@@ -202,7 +145,6 @@
     </variable>
 
 
-    <!-- Bank amount -->
     <variable
         name="BankAmount"
         class="java.math.BigDecimal"
@@ -221,43 +163,36 @@
     </variable>
 
 
-    <!-- ========================================================= -->
-    <!-- 6. GROUP                                                   -->
-    <!-- ========================================================= -->
+    <!-- ==================== BANK GROUP ==================== -->
 
     <group
         name="BankGroup"
         isStartNewPage="false">
 
-        <!-- Group expression -->
         <groupExpression><![CDATA[
             $F{bank_name}
         ]]></groupExpression>
 
 
-        <!-- ================= GROUP HEADER ================= -->
+        <!-- GROUP HEADER -->
 
         <groupHeader>
 
-            <band height="30">
+            <band height="26">
 
                 <textField>
 
                     <reportElement
                         x="0"
                         y="0"
-                        width="782"
-                        height="30"
-                        backcolor="#D9EAF7"
-                        mode="Opaque"/>
+                        width="742"
+                        height="26"
+                        style="GroupStyle"/>
 
                     <textElement
                         verticalAlignment="Middle">
 
-                        <font
-                            fontName="SansSerif"
-                            size="12"
-                            isBold="true"/>
+                        <paragraph leftIndent="8"/>
 
                     </textElement>
 
@@ -273,21 +208,19 @@
         </groupHeader>
 
 
-        <!-- ================= GROUP FOOTER ================= -->
+        <!-- GROUP FOOTER -->
 
         <groupFooter>
 
-            <band height="30">
-
-                <!-- Bank count -->
+            <band height="24">
 
                 <staticText>
 
                     <reportElement
-                        x="400"
+                        x="430"
                         y="0"
-                        width="180"
-                        height="25"
+                        width="150"
+                        height="24"
                         style="TotalStyle"/>
 
                     <textElement
@@ -295,7 +228,7 @@
                         verticalAlignment="Middle"/>
 
                     <text><![CDATA[
-                        Bank Cheques:
+                        Bank Total:
                     ]]></text>
 
                 </staticText>
@@ -306,12 +239,12 @@
                     <reportElement
                         x="580"
                         y="0"
-                        width="70"
-                        height="25"
+                        width="55"
+                        height="24"
                         style="TotalStyle"/>
 
                     <textElement
-                        textAlignment="Right"
+                        textAlignment="Center"
                         verticalAlignment="Middle"/>
 
                     <textFieldExpression><![CDATA[
@@ -321,15 +254,13 @@
                 </textField>
 
 
-                <!-- Bank amount -->
-
                 <textField pattern="#,##0.00">
 
                     <reportElement
-                        x="650"
+                        x="635"
                         y="0"
-                        width="132"
-                        height="25"
+                        width="107"
+                        height="24"
                         style="TotalStyle"/>
 
                     <textElement
@@ -349,23 +280,19 @@
     </group>
 
 
-    <!-- ========================================================= -->
-    <!-- 7. TITLE                                                   -->
-    <!-- ========================================================= -->
+    <!-- ==================== TITLE ==================== -->
 
     <title>
 
-        <band height="70">
-
-            <!-- Report title -->
+        <band height="65">
 
             <staticText>
 
                 <reportElement
                     x="0"
                     y="0"
-                    width="782"
-                    height="35"/>
+                    width="742"
+                    height="32"/>
 
                 <textElement
                     textAlignment="Center"
@@ -373,7 +300,7 @@
 
                     <font
                         fontName="SansSerif"
-                        size="20"
+                        size="18"
                         isBold="true"/>
 
                 </textElement>
@@ -385,15 +312,13 @@
             </staticText>
 
 
-            <!-- Minimum amount -->
-
-            <textField pattern="#,##0.00">
+            <textField>
 
                 <reportElement
                     x="0"
-                    y="40"
-                    width="782"
-                    height="25"/>
+                    y="36"
+                    width="742"
+                    height="22"/>
 
                 <textElement
                     textAlignment="Center"
@@ -401,13 +326,13 @@
 
                     <font
                         fontName="SansSerif"
-                        size="11"
+                        size="10"
                         isBold="true"/>
 
                 </textElement>
 
                 <textFieldExpression><![CDATA[
-                    "High Value Amount >= " + $P{P_MIN_AMOUNT}
+                    "Minimum Amount: " + $P{P_MIN_AMOUNT}
                 ]]></textFieldExpression>
 
             </textField>
@@ -417,15 +342,11 @@
     </title>
 
 
-    <!-- ========================================================= -->
-    <!-- 8. PAGE HEADER                                             -->
-    <!-- ========================================================= -->
+    <!-- ==================== PAGE HEADER ==================== -->
 
     <pageHeader>
 
-        <band height="25">
-
-            <!-- Left text -->
+        <band height="22">
 
             <staticText>
 
@@ -440,7 +361,7 @@
 
                     <font
                         fontName="SansSerif"
-                        size="9"
+                        size="8"
                         isBold="true"/>
 
                 </textElement>
@@ -452,14 +373,12 @@
             </staticText>
 
 
-            <!-- Page number -->
-
             <textField>
 
                 <reportElement
-                    x="650"
+                    x="642"
                     y="0"
-                    width="132"
+                    width="100"
                     height="20"/>
 
                 <textElement
@@ -468,7 +387,7 @@
 
                     <font
                         fontName="SansSerif"
-                        size="9"/>
+                        size="8"/>
 
                 </textElement>
 
@@ -483,15 +402,13 @@
     </pageHeader>
 
 
-    <!-- ========================================================= -->
-    <!-- 9. COLUMN HEADER                                           -->
-    <!-- ========================================================= -->
+    <!-- ==================== COLUMN HEADER ==================== -->
 
     <columnHeader>
 
-        <band height="30">
+        <band height="28">
 
-            <!-- Cheque Number -->
+            <!-- CHEQUE NO -->
 
             <staticText>
 
@@ -499,8 +416,8 @@
                     style="HeaderStyle"
                     x="0"
                     y="0"
-                    width="120"
-                    height="30"/>
+                    width="100"
+                    height="28"/>
 
                 <textElement
                     textAlignment="Center"
@@ -513,16 +430,16 @@
             </staticText>
 
 
-            <!-- Customer -->
+            <!-- CUSTOMER -->
 
             <staticText>
 
                 <reportElement
                     style="HeaderStyle"
-                    x="120"
+                    x="100"
                     y="0"
-                    width="180"
-                    height="30"/>
+                    width="170"
+                    height="28"/>
 
                 <textElement
                     textAlignment="Center"
@@ -535,16 +452,16 @@
             </staticText>
 
 
-            <!-- Bank -->
+            <!-- BANK -->
 
             <staticText>
 
                 <reportElement
                     style="HeaderStyle"
-                    x="300"
+                    x="270"
                     y="0"
                     width="160"
-                    height="30"/>
+                    height="28"/>
 
                 <textElement
                     textAlignment="Center"
@@ -557,16 +474,16 @@
             </staticText>
 
 
-            <!-- Amount -->
+            <!-- AMOUNT -->
 
             <staticText>
 
                 <reportElement
                     style="HeaderStyle"
-                    x="460"
+                    x="430"
                     y="0"
-                    width="160"
-                    height="30"/>
+                    width="130"
+                    height="28"/>
 
                 <textElement
                     textAlignment="Center"
@@ -579,16 +496,16 @@
             </staticText>
 
 
-            <!-- Status -->
+            <!-- STATUS -->
 
             <staticText>
 
                 <reportElement
                     style="HeaderStyle"
-                    x="620"
+                    x="560"
                     y="0"
-                    width="162"
-                    height="30"/>
+                    width="182"
+                    height="28"/>
 
                 <textElement
                     textAlignment="Center"
@@ -605,27 +522,24 @@
     </columnHeader>
 
 
-    <!-- ========================================================= -->
-    <!-- 10. DETAIL                                                 -->
-    <!-- ========================================================= -->
+    <!-- ==================== DETAIL ==================== -->
 
     <detail>
 
-        <band height="30">
+        <band height="26">
 
-            <!-- ================================================= -->
-            <!-- CHEQUE NUMBER                                      -->
-            <!-- ================================================= -->
+            <!-- CHEQUE NUMBER -->
 
             <textField>
 
                 <reportElement
                     x="0"
                     y="0"
-                    width="120"
-                    height="30"/>
+                    width="100"
+                    height="26"/>
 
                 <textElement
+                    textAlignment="Center"
                     verticalAlignment="Middle"/>
 
                 <textFieldExpression><![CDATA[
@@ -635,20 +549,22 @@
             </textField>
 
 
-            <!-- ================================================= -->
-            <!-- CUSTOMER                                           -->
-            <!-- ================================================= -->
+            <!-- CUSTOMER -->
 
             <textField>
 
                 <reportElement
-                    x="120"
+                    x="100"
                     y="0"
-                    width="180"
-                    height="30"/>
+                    width="170"
+                    height="26"/>
 
                 <textElement
-                    verticalAlignment="Middle"/>
+                    verticalAlignment="Middle">
+
+                    <paragraph leftIndent="5"/>
+
+                </textElement>
 
                 <textFieldExpression><![CDATA[
                     $F{customer_name}
@@ -657,20 +573,22 @@
             </textField>
 
 
-            <!-- ================================================= -->
-            <!-- BANK                                               -->
-            <!-- ================================================= -->
+            <!-- BANK -->
 
             <textField>
 
                 <reportElement
-                    x="300"
+                    x="270"
                     y="0"
                     width="160"
-                    height="30"/>
+                    height="26"/>
 
                 <textElement
-                    verticalAlignment="Middle"/>
+                    verticalAlignment="Middle">
+
+                    <paragraph leftIndent="5"/>
+
+                </textElement>
 
                 <textFieldExpression><![CDATA[
                     $F{bank_name}
@@ -679,21 +597,23 @@
             </textField>
 
 
-            <!-- ================================================= -->
-            <!-- AMOUNT                                             -->
-            <!-- ================================================= -->
+            <!-- AMOUNT -->
 
             <textField pattern="#,##0.00">
 
                 <reportElement
-                    x="460"
+                    x="430"
                     y="0"
-                    width="160"
-                    height="30"/>
+                    width="130"
+                    height="26"/>
 
                 <textElement
                     textAlignment="Right"
-                    verticalAlignment="Middle"/>
+                    verticalAlignment="Middle">
+
+                    <paragraph rightIndent="8"/>
+
+                </textElement>
 
                 <textFieldExpression><![CDATA[
                     $F{cheque_amount}
@@ -702,18 +622,15 @@
             </textField>
 
 
-            <!-- ================================================= -->
-            <!-- STATUS                                             -->
-            <!-- ================================================= -->
+            <!-- STATUS -->
 
             <textField>
 
                 <reportElement
-                    style="StatusStyle"
-                    x="620"
+                    x="560"
                     y="0"
-                    width="162"
-                    height="30"/>
+                    width="182"
+                    height="26"/>
 
                 <textElement
                     textAlignment="Center"
@@ -721,7 +638,7 @@
 
                     <font
                         fontName="SansSerif"
-                        size="10"
+                        size="9"
                         isBold="true"/>
 
                 </textElement>
@@ -737,26 +654,20 @@
     </detail>
 
 
-    <!-- ========================================================= -->
-    <!-- 11. COLUMN FOOTER                                          -->
-    <!-- ========================================================= -->
+    <!-- ==================== COLUMN FOOTER ==================== -->
 
     <columnFooter>
 
-        <band height="20"/>
+        <band height="10"/>
 
     </columnFooter>
 
 
-    <!-- ========================================================= -->
-    <!-- 12. PAGE FOOTER                                            -->
-    <!-- ========================================================= -->
+    <!-- ==================== PAGE FOOTER ==================== -->
 
     <pageFooter>
 
-        <band height="25">
-
-            <!-- Footer title -->
+        <band height="22">
 
             <staticText>
 
@@ -771,7 +682,7 @@
 
                     <font
                         fontName="SansSerif"
-                        size="9"/>
+                        size="8"/>
 
                 </textElement>
 
@@ -782,14 +693,12 @@
             </staticText>
 
 
-            <!-- Page number -->
-
             <textField>
 
                 <reportElement
-                    x="650"
+                    x="642"
                     y="0"
-                    width="132"
+                    width="100"
                     height="20"/>
 
                 <textElement
@@ -798,7 +707,7 @@
 
                     <font
                         fontName="SansSerif"
-                        size="9"/>
+                        size="8"/>
 
                 </textElement>
 
@@ -813,53 +722,32 @@
     </pageFooter>
 
 
-    <!-- ========================================================= -->
-    <!-- 13. SUMMARY                                                -->
-    <!-- ========================================================= -->
+    <!-- ==================== SUMMARY ==================== -->
 
     <summary>
 
-        <band height="100">
+        <band height="72">
 
-            <!-- Summary background -->
-
-            <rectangle>
-
-                <reportElement
-                    x="0"
-                    y="0"
-                    width="782"
-                    height="90"
-                    backcolor="#F2F2F2"
-                    mode="Opaque"/>
-
-            </rectangle>
-
-
-            <!-- ================================================= -->
-            <!-- TOTAL CHEQUES                                      -->
-            <!-- ================================================= -->
+            <!-- TOTAL CHEQUES -->
 
             <staticText>
 
                 <reportElement
-                    x="20"
-                    y="15"
-                    width="250"
-                    height="25"/>
+                    x="0"
+                    y="0"
+                    width="220"
+                    height="25"
+                    style="TotalStyle"/>
 
                 <textElement
                     verticalAlignment="Middle">
 
-                    <font
-                        fontName="SansSerif"
-                        size="12"
-                        isBold="true"/>
+                    <paragraph leftIndent="8"/>
 
                 </textElement>
 
                 <text><![CDATA[
-                    Total High Value Cheques:
+                    Total High Value Cheques
                 ]]></text>
 
             </staticText>
@@ -868,20 +756,15 @@
             <textField>
 
                 <reportElement
-                    x="270"
-                    y="15"
-                    width="100"
-                    height="25"/>
+                    x="220"
+                    y="0"
+                    width="70"
+                    height="25"
+                    style="TotalStyle"/>
 
                 <textElement
-                    verticalAlignment="Middle">
-
-                    <font
-                        fontName="SansSerif"
-                        size="12"
-                        isBold="true"/>
-
-                </textElement>
+                    textAlignment="Center"
+                    verticalAlignment="Middle"/>
 
                 <textFieldExpression><![CDATA[
                     $V{TotalHighValueCheques}
@@ -890,30 +773,26 @@
             </textField>
 
 
-            <!-- ================================================= -->
-            <!-- TOTAL AMOUNT                                       -->
-            <!-- ================================================= -->
+            <!-- TOTAL AMOUNT -->
 
             <staticText>
 
                 <reportElement
-                    x="400"
-                    y="15"
+                    x="310"
+                    y="0"
                     width="200"
-                    height="25"/>
+                    height="25"
+                    style="TotalStyle"/>
 
                 <textElement
                     verticalAlignment="Middle">
 
-                    <font
-                        fontName="SansSerif"
-                        size="12"
-                        isBold="true"/>
+                    <paragraph leftIndent="8"/>
 
                 </textElement>
 
                 <text><![CDATA[
-                    Total High Value Amount:
+                    Total High Value Amount
                 ]]></text>
 
             </staticText>
@@ -922,19 +801,17 @@
             <textField pattern="#,##0.00">
 
                 <reportElement
-                    x="600"
-                    y="15"
-                    width="162"
-                    height="25"/>
+                    x="510"
+                    y="0"
+                    width="232"
+                    height="25"
+                    style="TotalStyle"/>
 
                 <textElement
                     textAlignment="Right"
                     verticalAlignment="Middle">
 
-                    <font
-                        fontName="SansSerif"
-                        size="12"
-                        isBold="true"/>
+                    <paragraph rightIndent="8"/>
 
                 </textElement>
 
@@ -945,17 +822,15 @@
             </textField>
 
 
-            <!-- ================================================= -->
-            <!-- REPORT CRITERIA                                    -->
-            <!-- ================================================= -->
+            <!-- MINIMUM AMOUNT -->
 
             <staticText>
 
                 <reportElement
-                    x="20"
-                    y="55"
-                    width="250"
-                    height="20"/>
+                    x="0"
+                    y="35"
+                    width="220"
+                    height="25"/>
 
                 <textElement
                     verticalAlignment="Middle">
@@ -965,10 +840,12 @@
                         size="9"
                         isBold="true"/>
 
+                    <paragraph leftIndent="8"/>
+
                 </textElement>
 
                 <text><![CDATA[
-                    Minimum Amount:
+                    Minimum Amount
                 ]]></text>
 
             </staticText>
@@ -977,17 +854,15 @@
             <textField pattern="#,##0.00">
 
                 <reportElement
-                    x="270"
-                    y="55"
+                    x="220"
+                    y="35"
                     width="150"
-                    height="20"/>
+                    height="25"/>
 
                 <textElement
                     verticalAlignment="Middle">
 
-                    <font
-                        fontName="SansSerif"
-                        size="9"/>
+                    <paragraph leftIndent="5"/>
 
                 </textElement>
 
