@@ -12,6 +12,7 @@
     topMargin="20"
     bottomMargin="20">
 
+
     <parameter name="P_PROCESSING_DAILY_DATE" class="java.sql.Date"/>
 
     <queryString language="SQL"><![CDATA[
@@ -57,23 +58,6 @@
     <field name="micr_repair_pending" class="java.lang.Long"/>
     <field name="high_value_cheques" class="java.lang.Long"/>
     <field name="total_processing_amount" class="java.math.BigDecimal"/>
-
-    <subDataset name="StatusSummaryDataset">
-
-        <queryString language="SQL"><![CDATA[
-            SELECT
-                status,
-                COUNT(*) AS status_count
-            FROM cheque_transaction
-            WHERE processing_date = $P{P_PROCESSING_DAILY_DATE}
-            GROUP BY status
-            ORDER BY status
-        ]]></queryString>
-
-        <field name="status" class="java.lang.String"/>
-        <field name="status_count" class="java.lang.Long"/>
-
-    </subDataset>
 
     <title>
         <band height="70">
@@ -390,71 +374,6 @@
                 ]]></text>
             </staticText>
 
-            <barChart>
-
-                <chart>
-                    <reportElement
-                        x="0"
-                        y="225"
-                        width="792"
-                        height="155"/>
-
-                    <box>
-                        <pen lineWidth="0.5"/>
-                    </box>
-
-                    <chartTitle/>
-                    <chartSubtitle/>
-                    <chartLegend position="Bottom"/>
-                </chart>
-
-                <categoryDataset>
-
-                    <dataset>
-
-                        <datasetRun subDataset="StatusSummaryDataset">
-
-                            <connectionExpression><![CDATA[
-                                $P{REPORT_CONNECTION}
-                            ]]></connectionExpression>
-
-                        </datasetRun>
-
-                    </dataset>
-
-                    <categorySeries>
-
-                        <seriesExpression><![CDATA[
-                            "Cheque Count"
-                        ]]></seriesExpression>
-
-                        <categoryExpression><![CDATA[
-                            $F{status}
-                        ]]></categoryExpression>
-
-                        <valueExpression><![CDATA[
-                            $F{status_count}
-                        ]]></valueExpression>
-
-                    </categorySeries>
-
-                </categoryDataset>
-
-                <barPlot>
-
-                    <plot/>
-
-                    <categoryAxisFormat>
-                        <axisFormat labelRotation="0"/>
-                    </categoryAxisFormat>
-
-                    <valueAxisFormat>
-                        <axisFormat tickLabelMask="#,##0"/>
-                    </valueAxisFormat>
-
-                </barPlot>
-
-            </barChart>
 
         </band>
     </detail>
